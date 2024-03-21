@@ -10,4 +10,3 @@ browser.get('https://www.bigkinds.or.kr/v2/news/search.do;Bigkinds=3E4DB94BEB9E4
 wait = WebDriverWait(browser, 10)
 element = wait.until(EC.element_to_be_clickable((By.ID, 'resulteRe-btn')))
 print('페이지 로딩 완료')
-
