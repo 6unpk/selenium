@@ -24,9 +24,12 @@ with open('news_result.csv', 'w') as news_csv:
         # 10개씩 더 가져온다.
         for news in list_news:
             news_title = news.find_element(By.CLASS_NAME, 'news_tit').get_attribute('title')
-            news_url = news.find_element(By.CLASS_NAME, 'news_tit').get_attribute('href')
+            news_url = news.find_elements(By.CLASS_NAME, 'info')[2].get_attribute('href')
             press = news.find_element(By.CLASS_NAME, 'press').text
-            csv_writer.writerow([news_title, news_url, press])
+            browser.get(news_url)
+            article = browser.find_element(By.ID, 'dic_area').text
+            csv_writer.writerow([news_title, news_url, press, article])
+            browser.back()
 
         browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
         time.sleep(4)
