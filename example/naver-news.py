@@ -5,8 +5,6 @@ import urllib.parse
 import csv
 
 
-chrome = webdriver.Chrome()
-
 browser = webdriver.Chrome()
 
 keyword = input('검색 키워드:')
@@ -24,12 +22,21 @@ with open('news_result.csv', 'w') as news_csv:
         # 10개씩 더 가져온다.
         for news in list_news:
             news_title = news.find_element(By.CLASS_NAME, 'news_tit').get_attribute('title')
-            news_url = news.find_elements(By.CLASS_NAME, 'info')[2].get_attribute('href')
+            information = news.find_elements(By.CLASS_NAME, 'info')
+            if len(information) == 3:
+                news_url = information[2].get_attribute('href')
+            else:
+                news_url = None
             press = news.find_element(By.CLASS_NAME, 'press').text
-            browser.get(news_url)
-            article = browser.find_element(By.ID, 'dic_area').text
-            csv_writer.writerow([news_title, news_url, press, article])
-            browser.back()
+            original_window = browser.current_window_handle
+            time.sleep(0.1)
+            if type(news_url) == str:
+                browser.switch_to.new_window('tab')
+                browser.get(news_url)
+                article = browser.find_element(By.ID, 'dic_area').text
+                csv_writer.writerow([news_title, news_url, press, article])
+                browser.close()
+                browser.switch_to.window(original_window)
 
         browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
         time.sleep(4)
